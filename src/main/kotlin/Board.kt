@@ -1,5 +1,5 @@
 
-class Board(private val sizeX: Int, private val sizeY: Int, initialState: Array<IntArray>) {
+class Board(private val sizeX: Int, private val sizeY: Int) {
 
     private var board: Array<IntArray>
 
@@ -9,6 +9,14 @@ class Board(private val sizeX: Int, private val sizeY: Int, initialState: Array<
 
     // Initialize array
     init {
+        for (i in 0 until sizeX) {
+            for (j in 0 until sizeY) {
+                board[i][j] = 0
+            }
+        }
+    }
+
+    constructor(sizeX: Int, sizeY: Int, initialState: Array<IntArray>) : this(sizeX, sizeY){
         for (i in 0 until sizeX) {
             for (j in 0 until sizeY) {
                 board[i][j] = initialState[i][j]
@@ -42,6 +50,18 @@ class Board(private val sizeX: Int, private val sizeY: Int, initialState: Array<
         }
 
         return 0
+    }
+
+    fun killCell(x: Int, y:Int){
+        board[x][y] = 0
+    }
+
+    fun birthCell(x:Int, y:Int){
+        board[x][y] = 1
+    }
+
+    fun getCell(x:Int, y:Int):Int{
+        return board[x][y]
     }
 
     private fun numNeighbors(x: Int, y: Int): Int {
