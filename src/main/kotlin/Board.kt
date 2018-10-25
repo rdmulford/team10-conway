@@ -38,12 +38,12 @@ class Board(private val sizeX: Int, private val sizeY: Int) {
     }
 
     private fun check(i: Int, j: Int) {
-        var n = this.numNeighbors(i, j)
+        val n = this.numNeighbors(i, j)
         val cell = board[i][j]
 
         if (cell > 0 && (n <= 1 || n >= 4)) {
             killCell(i, j)
-        } else if (n = 3) {
+        } else if (n == 3) {
             birthCell(i, j)
         }
     }
@@ -86,9 +86,17 @@ class Board(private val sizeX: Int, private val sizeY: Int) {
         return n
     }
 
-    fun toString() {
-        for(i in 0 until sizeX)
-            for(j in 0 until sizeY)
-                println(board[i][j])
+    fun getCell(x: Int, y: Int) : Int {
+        return board[x][y]
+    }
+
+    fun printBoard() {
+        for(i in 0 until sizeX) {
+            for (j in 0 until sizeY) {
+                print(board[i][j])
+            }
+            println()
+        }
+        println()
     }
 }
