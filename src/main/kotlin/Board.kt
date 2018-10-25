@@ -1,51 +1,47 @@
-class Board(private val sizeX: Int, private val sizeY: Int) {
 
-    private val board: Array<IntArray>
+class Board(private val sizeX: Int, private val sizeY: Int, initialState: Array<IntArray>) {
+
+    private var board: Array<IntArray>
 
     init {
         board = Array(sizeX) { IntArray(sizeY) }
     }
 
     // Initialize array
-    fun init() {
+    init {
         for (i in 0 until sizeX) {
             for (j in 0 until sizeY) {
-                board[i][j] = 0
+                board[i][j] = initialState[i][j]
             }
         }
     }
 
-    fun killCell(x: Int, y: Int) {
-        board[x][y] = 0
-    }
-
-    fun birthCell(x: Int, y: Int) {
-        board[x][y] = 1
-    }
-
-
-    // Method to iterate to next state of game
-    fun iterate() {
+    // Method to generate next game state
+    fun nextGeneration() {
         // TODO:
         // This will be very performance inefficient for large boards. Maybe use a
         //  quad-linked list? each cell would use a reference to its left, right, up, down.
         // Should also use a Cell class
+        val temp = Array(sizeX){IntArray(sizeY)}
         for (i in 0 until sizeX) {
             for (j in 0 until sizeY) {
-                this.check(i, j)
+                temp[i][j] = this.check(i, j)
             }
         }
+        board = temp
     }
 
-    private fun check(i: Int, j: Int) {
-        var n = this.numNeighbors(i, j)
+    private fun check(i: Int, j: Int): Int {
+        val n = this.numNeighbors(i, j)
         val cell = board[i][j]
 
         if (cell > 0 && (n <= 1 || n >= 4)) {
-            killCell(i, j)
-        } else if (n = 3) {
-            birthCell(i, j)
+            return 0
+        }else if (cell == 1 || (cell == 0 && n == 3)){
+            return 1
         }
+
+        return 0
     }
 
     private fun numNeighbors(x: Int, y: Int): Int {
@@ -86,9 +82,14 @@ class Board(private val sizeX: Int, private val sizeY: Int) {
         return n
     }
 
-    fun toString() {
-        for(i in 0 until sizeX)
-            for(j in 0 until sizeY)
-                println(board[i][j])
+    fun printBoard() { //prints board to stdout
+        for(i in 0 until this.sizeX) {
+            for (j in 0 until this.sizeY) {
+                val temp = this.board[i][j]
+                print("$temp ")
+            }
+            println()
+        }
+        println()
     }
 }

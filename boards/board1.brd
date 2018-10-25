@@ -1,0 +1,10 @@
+infinite   = 0
+iterations = 0
+toroidal   = 0
+Width(X)   = 5
+Height(Y)  = 5
+1 0 0 0 0
+0 1 0 0 0
+0 0 1 0 0
+0 0 0 1 0
+0 0 0 0 1
