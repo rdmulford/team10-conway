@@ -23,9 +23,8 @@ fun main(args : Array<String>) {
     //load board
     if (inputString.compareTo("load") == 0){
         val board = loadBoard()
-        if (board != null) {
-            board.printBoard()
-        }
+
+        board?.printBoard()
 
         board?.nextGeneration()
         board?.printBoard()

@@ -6,7 +6,6 @@ internal class BoardTest {
     @org.junit.jupiter.api.Test
     fun initTest() {
         val board = Board(4,4)
-        board.init()
         for (i in 0 until 3) {
             for (j in 0 until 3) {
                 Assertions.assertEquals(board.getCell(i, j), 0)
@@ -18,7 +17,6 @@ internal class BoardTest {
     @org.junit.jupiter.api.Test
     fun killCellTest() {
         val board = Board(4,4)
-        board.init()
         board.birthCell(3,3)
         Assertions.assertEquals(board.getCell(3, 3), 1)
         board.killCell(3,3)
@@ -29,7 +27,6 @@ internal class BoardTest {
     @org.junit.jupiter.api.Test
     fun birthCellTest() {
         val board = Board(4,4)
-        board.init()
         board.birthCell(1,1)
         Assertions.assertEquals(board.getCell(1, 1), 1)
     }
@@ -38,11 +35,10 @@ internal class BoardTest {
     @org.junit.jupiter.api.Test
     fun iterateTest() {
         val board = Board(4,4)
-        board.init()
         board.birthCell(1,2)
         board.birthCell(0,1)
         board.birthCell(1,1)
-        board.iterate()
+        board.nextGeneration()
         Assertions.assertEquals(board.getCell(0, 2), 1)
     }
 
