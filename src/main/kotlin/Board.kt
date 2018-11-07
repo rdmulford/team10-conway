@@ -1,5 +1,5 @@
 
-class Board(private val sizeX: Int, private val sizeY: Int) {
+class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
 
     private var board: Array<IntArray>
 
@@ -25,8 +25,7 @@ class Board(private val sizeX: Int, private val sizeY: Int) {
     }
 
     // Method to generate next game state
-    fun nextGeneration() {
-        // TODO:
+    override fun nextGeneration() {
         // This will be very performance inefficient for large boards. Maybe use a
         //  quad-linked list? each cell would use a reference to its left, right, up, down.
         // Should also use a Cell class
@@ -52,15 +51,21 @@ class Board(private val sizeX: Int, private val sizeY: Int) {
         return 0
     }
 
-    fun killCell(x: Int, y:Int){
-        board[x][y] = 0
+    override fun killCell(x: Int, y:Int, player:Int): Boolean{
+        if(board[x][y] == player) {
+            board[x][y] = 0
+            return true
+        } else {
+            return false
+        }
     }
 
-    fun birthCell(x:Int, y:Int){
-        board[x][y] = 1
+    override fun birthCell(x:Int, y:Int, player:Int): Boolean{
+        board[x][y] = player
+        return true
     }
 
-    fun getCell(x:Int, y:Int):Int{
+    override fun getCell(x:Int, y:Int):Int{
         return board[x][y]
     }
 
@@ -72,7 +77,6 @@ class Board(private val sizeX: Int, private val sizeY: Int) {
         0 X 0
         0 0 0
         */
-        //TODO yeah this is a bit convoluted... need a better data struct and Cell class
         val left = x == 0
         val right = x == sizeX - 1
         val top = y == 0
@@ -91,18 +95,21 @@ class Board(private val sizeX: Int, private val sizeY: Int) {
         if (!bottom && board[x][y + 1] > 0)
             n++
         if (!right) {
-            if (!top && board[x + 1][y - 1] > 0)
+            if (!top && board[x + 1][y - 1] > 0) {
                 n++
-            if (board[x + 1][y] > 0)
+            }
+            if (board[x + 1][y] > 0) {
                 n++
-            if (!bottom && board[x + 1][y + 1] > 0)
+            }
+            if (!bottom && board[x + 1][y + 1] > 0) {
                 n++
+            }
         }
 
         return n
     }
 
-    fun printBoard() { //prints board to stdout
+    override fun printBoard() { //prints board to stdout
         for(i in 0 until this.sizeX) {
             for (j in 0 until this.sizeY) {
                 val temp = this.board[i][j]
