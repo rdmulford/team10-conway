@@ -3,6 +3,7 @@ import java.io.BufferedReader
 
 fun main(args : Array<String>) {
     var inputString: String
+    var iterations = 0
 
     println("Team 10: Conway's Game of Life Started")
 
@@ -26,10 +27,34 @@ fun main(args : Array<String>) {
 
         board?.printBoard()
 
-        board?.nextGeneration()
-        board?.printBoard()
+        do {
+            print("Iteration[$iterations]: Enter next(n) to iterate once. Enter iterate(i) to iterate a given number of times. Enter quit(q) to quit: ")
+            inputString = readLine()!!
+            println()
+            if(inputString.compareTo("next") == 0 || inputString.compareTo("n") == 0) {
+                board?.nextGeneration()
+                board?.printBoard()
+                iterations += 1
+            } else if(inputString.compareTo("quit") == 0 || inputString.compareTo("q") == 0) {
+                print("Quitting, thanks for running our awesome program\n")
+            } else if(inputString.compareTo("iterate") == 0 || inputString.compareTo("i") == 0) {
+                print("How many iterations?: ")
+                var iterationAmount = readLine()!!
+                iterations += iterationAmount.toInt()
+                println()
+                iterateBoard(board, iterationAmount.toInt() - 1)
+                board?.printBoard()
+            } else {
+                print("Unrecognized command, try again!\n")
+            }
+        }while(inputString.compareTo("quit") != 0 && inputString.compareTo("q") != 0)
     }
+}
 
+fun iterateBoard(board: Board?, n: Int) {
+    for(i in 1..n) {
+        board?.nextGeneration()
+    }
 }
 
 fun loadBoard(): Board?{
