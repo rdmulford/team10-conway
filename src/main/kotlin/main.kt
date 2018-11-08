@@ -49,34 +49,35 @@ fun loadBoard(): Board?{
 
     //determine if board is infinite or finite
     var input = reader.readLine().split("=")
-    if (input[1].toBoolean()){ //infinite board
+    if (input[1].trim().toBoolean()){ //infinite board
         println("NOT IMPLEMENTED")
         return null
     }else{  //finite board
         //determine if board is toroidal or dead edged
         reader.readLine() //skip over iterations
         input = reader.readLine().split("=")
-        if (input[1].toBoolean()){ //toroidal board
-            println("NOT IMPLEMENTED")
-            return null
-        }else{ //dead edged board
-            //determine size of board
-            input = reader.readLine().split('=')
-            val width = input[1].trim().toInt()
-            input = reader.readLine().split("=")
-            val height = input[1].trim().toInt()
 
-            //read in board
-            val initialBoard = Array(height){ IntArray(width)}
-            for (i in 0 until height) {
-                input = reader.readLine().split(" ")
-                for (j in 0 until width) {
-                    initialBoard[i][j] = input[j].toInt()
-                }
+        //determine type of finite board
+        val toroidalMode = input[1].trim().toBoolean() //toroidal board
+        println(toroidalMode)
+
+        //determine size of board
+        input = reader.readLine().split('=')
+        val width = input[1].trim().toInt()
+        input = reader.readLine().split("=")
+        val height = input[1].trim().toInt()
+
+        //read in board
+        val initialBoard = Array(height){ IntArray(width)}
+        for (i in 0 until height) {
+            input = reader.readLine().split(" ")
+            for (j in 0 until width) {
+                initialBoard[i][j] = input[j].toInt()
             }
-
-            //create board
-            return Board(width, height, initialBoard)
         }
+
+        //create board
+        return Board(width, height, toroidalMode, initialBoard)
+
     }
 }

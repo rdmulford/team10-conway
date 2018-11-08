@@ -1,7 +1,9 @@
+import java.lang.Math.floorMod
 
 class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
 
     private var board: Array<IntArray>
+    private var toroidalMode = false
 
     init {
         board = Array(sizeX) { IntArray(sizeY) }
@@ -16,7 +18,9 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
         }
     }
 
-    constructor(sizeX: Int, sizeY: Int, initialState: Array<IntArray>) : this(sizeX, sizeY){
+    constructor(sizeX: Int, sizeY: Int, toroidalMode: Boolean, initialState: Array<IntArray>) : this(sizeX, sizeY){
+        this.toroidalMode = toroidalMode
+
         for (i in 0 until sizeX) {
             for (j in 0 until sizeY) {
                 board[i][j] = initialState[i][j]
@@ -77,32 +81,60 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
         0 X 0
         0 0 0
         */
-        val left = x == 0
-        val right = x == sizeX - 1
-        val top = y == 0
-        val bottom = y == sizeY - 1
 
-        if (!left) {
-            if (!top && board[x - 1][y - 1] > 0)
+        if(this.toroidalMode){
+            //left
+            if (board[floorMod((x-1), sizeX)][y] > 0)
                 n++
-            if (board[x - 1][y] > 0)
+            //right
+            if (board[floorMod((x+1), sizeX)][y] > 0)
                 n++
-            if (!bottom && board[x - 1][y + 1] > 0)
+            //up
+            if (board[x][floorMod((y-1), sizeY)] > 0)
                 n++
-        }
-        if (!top && board[x][y - 1] > 0)
-            n++
-        if (!bottom && board[x][y + 1] > 0)
-            n++
-        if (!right) {
-            if (!top && board[x + 1][y - 1] > 0) {
+            //down
+            if (board[x][floorMod((y+1), sizeY)] > 0)
                 n++
+            //up left
+            if (board[floorMod((x-1), sizeX)][floorMod((y-1), sizeY)] > 0)
+                n++
+            //down left
+            if (board[floorMod((x-1), sizeX)][floorMod((y+1), sizeY)] > 0)
+                n++
+            //up right
+            if (board[floorMod((x+1), sizeX)][floorMod((y-1), sizeY)] > 0)
+                n++
+            //down right
+            if (board[floorMod((x+1), sizeX)][floorMod((y+1), sizeY)] > 0)
+                n++
+        }else {
+            val left = x == 0
+            val right = x == sizeX - 1
+            val top = y == 0
+            val bottom = y == sizeY - 1
+
+            if (!left) {
+                if (!top && board[x - 1][y - 1] > 0)
+                    n++
+                if (board[x - 1][y] > 0)
+                    n++
+                if (!bottom && board[x - 1][y + 1] > 0)
+                    n++
             }
-            if (board[x + 1][y] > 0) {
+            if (!top && board[x][y - 1] > 0)
                 n++
-            }
-            if (!bottom && board[x + 1][y + 1] > 0) {
+            if (!bottom && board[x][y + 1] > 0)
                 n++
+            if (!right) {
+                if (!top && board[x + 1][y - 1] > 0) {
+                    n++
+                }
+                if (board[x + 1][y] > 0) {
+                    n++
+                }
+                if (!bottom && board[x + 1][y + 1] > 0) {
+                    n++
+                }
             }
         }
 
