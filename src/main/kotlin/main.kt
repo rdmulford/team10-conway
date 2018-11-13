@@ -4,10 +4,26 @@ import java.io.BufferedReader
 fun main(args : Array<String>) {
     var inputString: String
     var iterations = 0
+    var board: Board?
+    var multiplayer: Boolean
+
+    //initializations
+    multiplayer = false
+    board = null
 
     println("Team 10: Conway's Game of Life Started")
 
-    //determine type of session
+    do {
+        println("What kind of game is this? singleplayer or multiplayer")
+        inputString = readLine()!!
+        if (inputString.compareTo("singleplayer") == 0){
+            multiplayer = false
+        }else if (inputString.compareTo("multiplayer") == 0){
+            multiplayer = true
+        }
+    }while((inputString.compareTo("singleplayer") != 0) and (inputString.compareTo("multiplayer") != 0))
+
+    //determine how we are getting our board
     do {
 
         print("Load saved board or create new board? (load / new): ")
@@ -19,36 +35,62 @@ fun main(args : Array<String>) {
     //new board
     if (inputString.compareTo("new") == 0){
         println("NOT IMPLEMENTED")
+        return
     }
 
     //load board
-    if (inputString.compareTo("load") == 0){
-        val board = loadBoard()
+    if (inputString.compareTo("load") == 0) {
+        if (multiplayer){
+            println("NOT IMPLEMENTED")
+            return
+        }else {
+            board = loadBoard()
+        }
+    }
 
-        board?.printBoard()
+    //check for successful board creation
+    if (board != null) {
+        println("Initial Board:")
+        board.printBoard()
+    }else{
+        println("ERROR: board generation or load has failed")
+        return
+    }
 
-        do {
-            print("Iteration[$iterations]: Enter next(n) to iterate once. Enter iterate(i) to iterate a given number of times. Enter quit(q) to quit: ")
-            inputString = readLine()!!
-            println()
-            if(inputString.compareTo("next") == 0 || inputString.compareTo("n") == 0) {
-                board?.nextGeneration()
-                board?.printBoard()
+    do {
+        print("Iteration[$iterations]: next (n), quit (q), iterate (i), save (s), play (p)")
+        inputString = readLine()!!
+        println()
+        when {
+            (inputString.compareTo("play") == 0 || inputString.compareTo("p") == 0) -> {
+                println("NOT IMPLEMENTED")
+            }
+            (inputString.compareTo("save") == 0 || inputString.compareTo("s") == 0) -> {
+                println("Saving board")
+                println("NOT IMPLEMENTED")
+            }
+            (inputString.compareTo("next") == 0 || inputString.compareTo("n") == 0) -> {
+                board.nextGeneration()
+                board.printBoard()
                 iterations += 1
-            } else if(inputString.compareTo("quit") == 0 || inputString.compareTo("q") == 0) {
-                print("Quitting, thanks for running our awesome program\n")
-            } else if(inputString.compareTo("iterate") == 0 || inputString.compareTo("i") == 0) {
+            }
+            (inputString.compareTo("quit") == 0 || inputString.compareTo("q") == 0) -> {
+                println("Quitting, thanks for running our awesome program")
+            }
+            (inputString.compareTo("iterate") == 0 || inputString.compareTo("i") == 0) -> {
                 print("How many iterations?: ")
-                var iterationAmount = readLine()!!
+                val iterationAmount = readLine()!!
                 iterations += iterationAmount.toInt()
                 println()
                 iterateBoard(board, iterationAmount.toInt() - 1)
-                board?.printBoard()
-            } else {
+                board.printBoard()
+            }
+            else -> {
                 print("Unrecognized command, try again!\n")
             }
-        }while(inputString.compareTo("quit") != 0 && inputString.compareTo("q") != 0)
-    }
+        }
+    }while(inputString.compareTo("quit") != 0 && inputString.compareTo("q") != 0)
+
 }
 
 fun iterateBoard(board: Board?, n: Int) {
