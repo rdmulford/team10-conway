@@ -1,9 +1,11 @@
 import java.io.File
 import java.io.BufferedReader
+import java.util.*
 
 fun main(args : Array<String>) {
     var inputString: String
     var iterations = 0
+    var board = Board(0, 0)
 
     println("Team 10: Conway's Game of Life Started")
 
@@ -22,13 +24,14 @@ fun main(args : Array<String>) {
     }
 
     //load board
+
     if (inputString.compareTo("load") == 0){
         val board = loadBoard()
 
         board?.printBoard()
 
         do {
-            print("Iteration[$iterations]: Enter next(n) to iterate once. Enter iterate(i) to iterate a given number of times. Enter quit(q) to quit: ")
+            print("Iteration[$iterations]: Enter next(n) to iterate once. Enter iterate(i) to iterate a given number of times. Enter play(p) to iterate at an interval. Enter quit(q) to quit: ")
             inputString = readLine()!!
             println()
             if(inputString.compareTo("next") == 0 || inputString.compareTo("n") == 0) {
@@ -44,11 +47,33 @@ fun main(args : Array<String>) {
                 println()
                 iterateBoard(board, iterationAmount.toInt() - 1)
                 board?.printBoard()
+            } else if(inputString.compareTo("play") == 0 || inputString.compareTo("p") == 0) {
+                //iterations per sec
+                var valid: Boolean
+                var iterationsPerSecond: Long = 0
+                do {
+                    valid = true
+                    print("Number of iterations per second: ")
+                    inputString = readLine()!!
+                    try {
+                        iterationsPerSecond = inputString.toLong()
+                        if(iterationsPerSecond < 1) {
+                            println("Invalid input.")
+                            valid = false
+                        }
+                    } catch (e: NumberFormatException) {
+                        println("Invalid input.")
+                        valid = false
+                    }
+                } while (!valid)
+                intervalIterate(iterationsPerSecond, board)
             } else {
                 print("Unrecognized command, try again!\n")
             }
         }while(inputString.compareTo("quit") != 0 && inputString.compareTo("q") != 0)
     }
+
+
 }
 
 fun iterateBoard(board: Board?, n: Int) {
@@ -106,3 +131,12 @@ fun loadBoard(): Board?{
 
     }
 }
+
+fun intervalIterate(iterationsPerSecond: Long, board: Board?) {
+    val period: Long = 1000/iterationsPerSecond
+    val timer = Timer()
+    println("printing board....")
+    board?.printBoard()
+    timer.schedule(IterTask(board), 0, period)
+}
+
