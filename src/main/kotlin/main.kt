@@ -1,5 +1,6 @@
 import java.io.File
 import java.io.BufferedReader
+import java.util.*
 
 fun main(args : Array<String>) {
     var inputString: String
@@ -155,3 +156,12 @@ fun loadBoard(): Board?{
 
     }
 }
+
+fun intervalIterate(iterationsPerSecond: Long, board: Board?) {
+    val period: Long = 1000/iterationsPerSecond
+    val timer = Timer()
+    println("printing board....")
+    board?.printBoard()
+    timer.schedule(IterTask(board), 0, period)
+}
+
