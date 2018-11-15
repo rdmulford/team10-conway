@@ -14,7 +14,7 @@ fun main(args : Array<String>) {
     println("Team 10: Conway's Game of Life Started")
 
     do {
-        println("What kind of game is this? singleplayer or multiplayer")
+        println("What kind of game is this?\nsingleplayer or multiplayer: ")
         inputString = readLine()!!
         if (inputString.compareTo("singleplayer") == 0){
             multiplayer = false
@@ -57,40 +57,48 @@ fun main(args : Array<String>) {
         return
     }
 
-    do {
-        print("Iteration[$iterations]: next (n), quit (q), iterate (i), save (s), play (p)")
-        inputString = readLine()!!
-        println()
-        when {
-            (inputString.compareTo("play") == 0 || inputString.compareTo("p") == 0) -> {
-                println("NOT IMPLEMENTED")
+    if (! multiplayer) {
+        //single player game
+        do {
+            print("Iteration[$iterations]\nnext (n), quit (q), iterate (i), save (s), play (p): ")
+            inputString = readLine()!!
+            println()
+            when {
+                (inputString.compareTo("play") == 0 || inputString.compareTo("p") == 0) -> {
+                    println("NOT IMPLEMENTED")
+                    println()
+                }
+                (inputString.compareTo("save") == 0 || inputString.compareTo("s") == 0) -> {
+                    println("Saving board")
+                    println("NOT IMPLEMENTED")
+                    println()
+                }
+                (inputString.compareTo("next") == 0 || inputString.compareTo("n") == 0) -> {
+                    board.nextGeneration()
+                    board.printBoard()
+                    iterations += 1
+                }
+                (inputString.compareTo("quit") == 0 || inputString.compareTo("q") == 0) -> {
+                    println("Quitting, thanks for running our awesome program")
+                }
+                (inputString.compareTo("iterate") == 0 || inputString.compareTo("i") == 0) -> {
+                    print("How many iterations?: ")
+                    val iterationAmount = readLine()!!
+                    iterations += iterationAmount.toInt()
+                    println()
+                    iterateBoard(board, iterationAmount.toInt() - 1)
+                    board.printBoard()
+                }
+                else -> {
+                    print("Unrecognized command, try again!\n")
+                }
             }
-            (inputString.compareTo("save") == 0 || inputString.compareTo("s") == 0) -> {
-                println("Saving board")
-                println("NOT IMPLEMENTED")
-            }
-            (inputString.compareTo("next") == 0 || inputString.compareTo("n") == 0) -> {
-                board.nextGeneration()
-                board.printBoard()
-                iterations += 1
-            }
-            (inputString.compareTo("quit") == 0 || inputString.compareTo("q") == 0) -> {
-                println("Quitting, thanks for running our awesome program")
-            }
-            (inputString.compareTo("iterate") == 0 || inputString.compareTo("i") == 0) -> {
-                print("How many iterations?: ")
-                val iterationAmount = readLine()!!
-                iterations += iterationAmount.toInt()
-                println()
-                iterateBoard(board, iterationAmount.toInt() - 1)
-                board.printBoard()
-            }
-            else -> {
-                print("Unrecognized command, try again!\n")
-            }
-        }
-    }while(inputString.compareTo("quit") != 0 && inputString.compareTo("q") != 0)
-
+        } while (inputString.compareTo("quit") != 0 && inputString.compareTo("q") != 0)
+    }else{
+        //multiplayer game
+        println("NOT IMPLEMENTED")
+        return
+    }
 }
 
 fun iterateBoard(board: Board?, n: Int) {
@@ -125,8 +133,7 @@ fun loadBoard(): Board?{
         input = reader.readLine().split("=")
 
         //determine type of finite board
-        val toroidalMode = input[1].trim().toBoolean() //toroidal board
-        println(toroidalMode)
+        val toroidalMode = input[1].trim().toBoolean()
 
         //determine size of board
         input = reader.readLine().split('=')
