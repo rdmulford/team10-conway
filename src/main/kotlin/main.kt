@@ -83,7 +83,7 @@ fun main(args : Array<String>) {
                 }
                 (inputString.compareTo("iterate") == 0 || inputString.compareTo("i") == 0) -> {
                     print("How many iterations?: ")
-                    val iterationAmount = readLine()!!
+                    val iterationAmount = readLine()!! //TODO: This can crash the program if input is not int
                     iterations += iterationAmount.toInt()
                     println()
                     iterateBoard(board, iterationAmount.toInt() - 1)
