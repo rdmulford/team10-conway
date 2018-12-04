@@ -68,14 +68,14 @@ fun main(args : Array<String>) {
                 (inputString.compareTo("play") == 0 || inputString.compareTo("p") == 0) -> {
                     //iterations per second
                     var valid: Boolean
-                    var iterationsPerSecond: Long = 0
+                    var iterationsPerSecond = 0.0
                     do {
                         valid = true
                         print("Number of iterations per second: ")
                         inputString = readLine()!!
                         try {
-                            iterationsPerSecond = inputString.toLong()
-                            if(iterationsPerSecond < 1){
+                            iterationsPerSecond = inputString.toDouble()
+                            if(iterationsPerSecond <= 0){
                                 println("Invalid Input: Must be positive nonzero number")
                                 valid = false
                             }
@@ -189,8 +189,8 @@ fun loadBoard(): BoardInterface?{
     }
 }
 
-fun intervalIterate(iterationsPerSecond: Long, board: BoardInterface?) {
-    val period: Long = 1000/iterationsPerSecond
+fun intervalIterate(iterationsPerSecond: Double, board: BoardInterface?) {
+    val period: Long = (1000/iterationsPerSecond).toLong()
     val timer = Timer()
     println("printing board....")
     board?.printBoard()
