@@ -5,11 +5,26 @@ import java.util.*
 fun main(args : Array<String>) {
     var inputString: String
     var iterations = 0
-    var board = Board(0, 0)
+    var board: Board?
+    var multiplayer: Boolean
+
+    //initializations
+    multiplayer = false
+    board = null
 
     println("Team 10: Conway's Game of Life Started")
 
-    //determine type of session
+    do {
+        println("What kind of game is this?\nsingleplayer or multiplayer: ")
+        inputString = readLine()!!
+        if (inputString.compareTo("singleplayer") == 0){
+            multiplayer = false
+        }else if (inputString.compareTo("multiplayer") == 0){
+            multiplayer = true
+        }
+    }while((inputString.compareTo("singleplayer") != 0) and (inputString.compareTo("multiplayer") != 0))
+
+    //determine how we are getting our board
     do {
 
         print("Load saved board or create new board? (load / new): ")
@@ -21,59 +36,102 @@ fun main(args : Array<String>) {
     //new board
     if (inputString.compareTo("new") == 0){
         println("NOT IMPLEMENTED")
+        return
     }
 
     //load board
-
-    if (inputString.compareTo("load") == 0){
-        val board = loadBoard()
-
-        board?.printBoard()
-
-        do {
-            print("Iteration[$iterations]: Enter next(n) to iterate once. Enter iterate(i) to iterate a given number of times. Enter play(p) to iterate at an interval. Enter quit(q) to quit: ")
-            inputString = readLine()!!
-            println()
-            if(inputString.compareTo("next") == 0 || inputString.compareTo("n") == 0) {
-                board?.nextGeneration()
-                board?.printBoard()
-                iterations += 1
-            } else if(inputString.compareTo("quit") == 0 || inputString.compareTo("q") == 0) {
-                print("Quitting, thanks for running our awesome program\n")
-            } else if(inputString.compareTo("iterate") == 0 || inputString.compareTo("i") == 0) {
-                print("How many iterations?: ")
-                var iterationAmount = readLine()!!
-                iterations += iterationAmount.toInt()
-                println()
-                iterateBoard(board, iterationAmount.toInt() - 1)
-                board?.printBoard()
-            } else if(inputString.compareTo("play") == 0 || inputString.compareTo("p") == 0) {
-                //iterations per sec
-                var valid: Boolean
-                var iterationsPerSecond: Long = 0
-                do {
-                    valid = true
-                    print("Number of iterations per second: ")
-                    inputString = readLine()!!
-                    try {
-                        iterationsPerSecond = inputString.toLong()
-                        if(iterationsPerSecond < 1) {
-                            println("Invalid input.")
-                            valid = false
-                        }
-                    } catch (e: NumberFormatException) {
-                        println("Invalid input.")
-                        valid = false
-                    }
-                } while (!valid)
-                intervalIterate(iterationsPerSecond, board)
-            } else {
-                print("Unrecognized command, try again!\n")
-            }
-        }while(inputString.compareTo("quit") != 0 && inputString.compareTo("q") != 0)
+    if (inputString.compareTo("load") == 0) {
+        if (multiplayer){
+            println("NOT IMPLEMENTED")
+            return
+        }else {
+            board = loadBoard()
+        }
     }
 
+    //check for successful board creation
+    if (board != null) {
+        println("Initial Board:")
+        board.printBoard()
+    }else{
+        println("ERROR: board generation or load has failed")
+        return
+    }
 
+    if (! multiplayer) {
+        //single player game
+        do {
+            print("Iteration[$iterations]\nnext (n), quit (q), iterate (i), save (s), play (p): ")
+            inputString = readLine()!!
+            println()
+            when {
+                (inputString.compareTo("play") == 0 || inputString.compareTo("p") == 0) -> {
+                    //iterations per second
+                    var valid: Boolean
+                    var iterationsPerSecond: Long = 0
+                    do {
+                        valid = true
+                        print("Number of iterations per second: ")
+                        inputString = readLine()!!
+                        try {
+                            iterationsPerSecond = inputString.toLong()
+                            if(iterationsPerSecond < 1){
+                                println("Invalid Input: Must be positive nonzero number")
+                                valid = false
+                            }
+                        } catch (e: NumberFormatException) {
+                            println("Invalid Input: Must be valid number")
+                            valid = false
+                        }
+                    } while(!valid)
+                    intervalIterate(iterationsPerSecond, board)
+                }
+                (inputString.compareTo("save") == 0 || inputString.compareTo("s") == 0) -> {
+                    println("Saving board")
+                    println("NOT IMPLEMENTED")
+                    println()
+                }
+                (inputString.compareTo("next") == 0 || inputString.compareTo("n") == 0) -> {
+                    board.nextGeneration()
+                    board.printBoard()
+                    iterations += 1
+                }
+                (inputString.compareTo("quit") == 0 || inputString.compareTo("q") == 0) -> {
+                    println("Quitting, thanks for running our awesome program")
+                }
+                (inputString.compareTo("iterate") == 0 || inputString.compareTo("i") == 0) -> {
+                    var iterationAmount = 0
+                    var valid: Boolean
+                    do {
+                        valid = true
+                        print("How many iterations?: ")
+                        inputString = readLine()!!
+                        try {
+                            iterationAmount = inputString.toInt()
+                            if (iterationAmount < 1) {
+                                println("Invalid Input: Must be positive nonzero number")
+                                valid = false
+                            }
+                        } catch (e: NumberFormatException) {
+                            println("Invalid Input: Must be valid number")
+                            valid = false
+                        }
+                    }while (!valid)
+                    iterations += iterationAmount
+                    println()
+                    iterateBoard(board, iterationAmount - 1)
+                    board.printBoard()
+                }
+                else -> {
+                    print("Unrecognized command, try again!\n")
+                }
+            }
+        } while (inputString.compareTo("quit") != 0 && inputString.compareTo("q") != 0)
+    }else{
+        //multiplayer game
+        println("NOT IMPLEMENTED")
+        return
+    }
 }
 
 fun iterateBoard(board: Board?, n: Int) {
@@ -108,8 +166,7 @@ fun loadBoard(): Board?{
         input = reader.readLine().split("=")
 
         //determine type of finite board
-        val toroidalMode = input[1].trim().toBoolean() //toroidal board
-        println(toroidalMode)
+        val toroidalMode = input[1].trim().toBoolean()
 
         //determine size of board
         input = reader.readLine().split('=')
