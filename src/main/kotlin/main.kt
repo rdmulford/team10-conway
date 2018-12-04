@@ -5,7 +5,7 @@ import java.util.*
 fun main(args : Array<String>) {
     var inputString: String
     var iterations = 0
-    var board: Board?
+    var board: BoardInterface?
     var multiplayer: Boolean
 
     //initializations
@@ -134,13 +134,13 @@ fun main(args : Array<String>) {
     }
 }
 
-fun iterateBoard(board: Board?, n: Int) {
+fun iterateBoard(board: BoardInterface?, n: Int) {
     for(i in 1..n) {
         board?.nextGeneration()
     }
 }
 
-fun loadBoard(): Board?{
+fun loadBoard(): BoardInterface?{
     var file: File
 
     var inputString: String
@@ -189,7 +189,7 @@ fun loadBoard(): Board?{
     }
 }
 
-fun intervalIterate(iterationsPerSecond: Long, board: Board?) {
+fun intervalIterate(iterationsPerSecond: Long, board: BoardInterface?) {
     val period: Long = 1000/iterationsPerSecond
     val timer = Timer()
     println("printing board....")
