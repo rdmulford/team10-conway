@@ -195,5 +195,7 @@ fun intervalIterate(iterationsPerSecond: Long, board: BoardInterface?) {
     println("printing board....")
     board?.printBoard()
     timer.schedule(IterTask(board), 0, period)
+    readLine()!!
+    timer.cancel()
 }
 
