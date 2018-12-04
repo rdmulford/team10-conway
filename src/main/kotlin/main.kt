@@ -66,8 +66,25 @@ fun main(args : Array<String>) {
             println()
             when {
                 (inputString.compareTo("play") == 0 || inputString.compareTo("p") == 0) -> {
-                    println("NOT IMPLEMENTED")
-                    println()
+                    //iterations per second
+                    var valid: Boolean
+                    var iterationsPerSecond: Long = 0
+                    do {
+                        valid = true
+                        print("Number of iterations per second: ")
+                        inputString = readLine()!!
+                        try {
+                            iterationsPerSecond = inputString.toLong()
+                            if(iterationsPerSecond < 1){
+                                println("Invalid Input: Must be positive nonzero number")
+                                valid = false
+                            }
+                        } catch (e: NumberFormatException) {
+                            println("Invalid Input: Must be valid number")
+                            valid = false
+                        }
+                    } while(!valid)
+                    intervalIterate(iterationsPerSecond, board)
                 }
                 (inputString.compareTo("save") == 0 || inputString.compareTo("s") == 0) -> {
                     println("Saving board")
@@ -83,11 +100,26 @@ fun main(args : Array<String>) {
                     println("Quitting, thanks for running our awesome program")
                 }
                 (inputString.compareTo("iterate") == 0 || inputString.compareTo("i") == 0) -> {
-                    print("How many iterations?: ")
-                    val iterationAmount = readLine()!! //TODO: This can crash the program if input is not int
-                    iterations += iterationAmount.toInt()
+                    var iterationAmount = 0
+                    var valid: Boolean
+                    do {
+                        valid = true
+                        print("How many iterations?: ")
+                        inputString = readLine()!!
+                        try {
+                            iterationAmount = inputString.toInt()
+                            if (iterationAmount < 1) {
+                                println("Invalid Input: Must be positive nonzero number")
+                                valid = false
+                            }
+                        } catch (e: NumberFormatException) {
+                            println("Invalid Input: Must be valid number")
+                            valid = false
+                        }
+                    }while (!valid)
+                    iterations += iterationAmount
                     println()
-                    iterateBoard(board, iterationAmount.toInt() - 1)
+                    iterateBoard(board, iterationAmount - 1)
                     board.printBoard()
                 }
                 else -> {
