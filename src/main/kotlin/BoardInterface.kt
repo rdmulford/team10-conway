@@ -1,3 +1,5 @@
+import java.io.File
+
 interface BoardInterface{
 
     fun nextGeneration()
@@ -7,6 +9,8 @@ interface BoardInterface{
     fun birthCell(x: Int, y: Int, player: Int): Boolean
 
     fun getCell(x: Int, y: Int): Int
+
+    fun save(saveFile: File): Boolean
 
     fun printBoard()
 
