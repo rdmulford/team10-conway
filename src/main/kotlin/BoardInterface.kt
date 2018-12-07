@@ -10,4 +10,7 @@ interface BoardInterface{
 
     fun printBoard()
 
+    fun printBoardLineHelpers()
+
+    fun isAlive(player: Int): Boolean
 }
