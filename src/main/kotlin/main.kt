@@ -1,5 +1,6 @@
 import java.io.File
 import java.io.BufferedReader
+import java.io.IOException
 import java.util.*
 
 fun main(args : Array<String>) {
@@ -88,8 +89,37 @@ fun main(args : Array<String>) {
                 }
                 (inputString.compareTo("save") == 0 || inputString.compareTo("s") == 0) -> {
                     println("Saving board")
-                    println("NOT IMPLEMENTED")
-                    println()
+                    var valid1: Boolean
+                    var valid2:Boolean
+                    var file: File
+                    do{
+                        valid1 = true
+                        print("Enter file name: ")
+                        inputString = readLine()!!
+                        file = File("boards/$inputString")
+                        if (file.exists()){ //file exists, make sure user wants to save over it
+                            do {
+                                valid2 = true
+                                print("File already exists. Overwrite?(y/n) ")
+                                inputString = readLine()!!
+                                if (inputString.compareTo("y") == 0) {
+                                    valid1 = true
+                                }else if (inputString.compareTo("n") == 0) {
+                                    valid1 = false
+                                }else{
+                                    valid2 = false
+                                }
+                            } while(!valid2)
+                        }else{ //file does not exist, try to make it
+                            try{
+                                file.createNewFile()
+                            }catch(e: IOException){
+                                println("Error: File could not be created. Try Again")
+                                valid1 = false
+                            }
+                        }
+                    } while(!valid1)
+                    board.save(file)
                 }
                 (inputString.compareTo("next") == 0 || inputString.compareTo("n") == 0) -> {
                     board.nextGeneration()
