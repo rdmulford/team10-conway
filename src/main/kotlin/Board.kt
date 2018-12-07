@@ -1,3 +1,7 @@
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
 import java.lang.Math.floorMod
 
 class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
@@ -175,6 +179,30 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
             println()
         }
         println()
+
+      override fun save(saveFile: File): Boolean{
+        val writer = BufferedWriter(FileWriter(saveFile))
+        try {
+            //write header
+            writer.write("infinite   = false\n")
+            writer.write("iterations = 0\n")
+            writer.write("toroidal   = " + this.toroidalMode.toString() + "\n")
+            writer.write("Width(x)   = " + this.sizeX.toString() + "\n")
+            writer.write("Height(y)  = " + this.sizeY.toString() + "\n")
+            //write board body
+            for (i in 0 until this.sizeY) {
+                for (j in 0 until this.sizeX) {
+                    val temp = this.board[i][j]
+                    writer.write(temp.toString() + " ")
+                }
+                writer.write("\n")
+            }
+            writer.close()
+            return true
+        }catch(e: IOException){
+            println("Error: File could not be saved")
+            return false
+        }
     }
 
     override fun printBoard() { //prints board to stdout
