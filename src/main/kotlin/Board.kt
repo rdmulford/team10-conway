@@ -32,6 +32,17 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
         }
     }
 
+    override fun isAlive(player: Int): Boolean {
+        for (i in 0 until sizeX) {
+            for (j in 0 until sizeY) {
+                if (board[i][j] == player) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     // Method to generate next game state
     override fun nextGeneration() {
         // This will be very performance inefficient for large boards. Maybe use a
@@ -52,15 +63,15 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
 
         if (cell > 0 && (n <= 1 || n >= 4)) {
             return 0
-        }else if (cell == 1 || (cell == 0 && n == 3)){
-            return 1
+        }else if (cell > 0 || (cell == 0 && n == 3)){
+            return cell
         }
 
         return 0
     }
 
     override fun killCell(x: Int, y:Int, player:Int): Boolean{
-        if(board[x][y] == player) {
+        if (board[x][y] == player) {
             board[x][y] = 0
             return true
         } else {
@@ -69,8 +80,12 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
     }
 
     override fun birthCell(x:Int, y:Int, player:Int): Boolean{
-        board[x][y] = player
-        return true
+        if (board[x][y] == 0) {
+            board[x][y] = player
+            return true
+        } else  {
+            return false
+        }
     }
 
     override fun getCell(x:Int, y:Int):Int{
@@ -143,6 +158,27 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
         }
 
         return n
+    }
+
+    override fun printBoardLineHelpers() {
+        for (i in -1 until this.sizeX) {
+            for (j in -1 until this.sizeY) {
+                if (i == -1 || j == -1) {
+                    if (i == -1 && j == -1) {
+                        print("+ ")
+                    } else if (i == -1) {
+                        print("$j ")
+                    } else if (j == -1) {
+                        print("$i ")
+                    }
+                } else {
+                    val temp = this.board[i][j]
+                    print("$temp ")
+                }
+            }
+            println()
+        }
+        println()
     }
 
     override fun save(saveFile: File): Boolean{
