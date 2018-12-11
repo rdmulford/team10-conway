@@ -62,8 +62,8 @@ fun main(args : Array<String>) {
     }
 }
 
-fun generateMultiplayerBoard(players: Int): Board? {
-    val board :Board?
+fun generateMultiplayerBoard(players: Int): BoardInterface? {
+    val board :BoardInterface?
     if (players == 2) {
         board = loadBoardFile("twoPlayer.brd")
     } else if (players == 3) {
@@ -317,7 +317,7 @@ fun iterateBoard(board: BoardInterface?, n: Int) {
     }
 }
 
-fun loadBoardFile(filename: String): Board?{
+fun loadBoardFile(filename: String): BoardInterface?{
     var inputString: String
     var file = File("boards/$filename")
 
@@ -327,8 +327,26 @@ fun loadBoardFile(filename: String): Board?{
     //determine if board is infinite or finite
     var input = reader.readLine().split("=")
     if (input[1].trim().toBoolean()){ //infinite board
-        println("NOT IMPLEMENTED")
-        return null
+        reader.readLine() //skip over iterations
+
+        //determine size
+        input = reader.readLine().split("=")
+        val width = input[1].trim().toInt()
+        input = reader.readLine().split("=")
+        val height = input[1].trim().toInt()
+
+        //read and create board
+        var infBoardLoad = InfiniteBoard()
+        infBoardLoad.xMax = width
+        infBoardLoad.yMax = height
+        for(y in 0 until height) {
+            input = reader.readLine().split(" ")
+            for(x in 0 until width) {
+                infBoardLoad.birthCell(x, y, input[x].trim().toInt())
+            }
+        }
+
+        return infBoardLoad
     }else{  //finite board
         //determine if board is toroidal or dead edged
         reader.readLine() //skip over iterations
@@ -376,8 +394,26 @@ fun loadBoard(): BoardInterface?{
     //determine if board is infinite or finite
     var input = reader.readLine().split("=")
     if (input[1].trim().toBoolean()){ //infinite board
-        println("NOT IMPLEMENTED")
-        return null
+        reader.readLine() //skip over iterations
+
+        //determine size
+        input = reader.readLine().split("=")
+        val width = input[1].trim().toInt()
+        input = reader.readLine().split("=")
+        val height = input[1].trim().toInt()
+
+        //read and create board
+        var infBoardLoad = InfiniteBoard()
+        infBoardLoad.xMax = width
+        infBoardLoad.yMax = height
+        for(y in 0 until height) {
+            input = reader.readLine().split(" ")
+            for(x in 0 until width) {
+                infBoardLoad.birthCell(x, y, input[x].trim().toInt())
+            }
+        }
+
+        return infBoardLoad
     }else{  //finite board
         //determine if board is toroidal or dead edged
         reader.readLine() //skip over iterations
