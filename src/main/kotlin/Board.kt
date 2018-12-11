@@ -60,16 +60,30 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
     }
 
     private fun check(i: Int, j: Int): Int {
-        val n = this.numNeighbors(i, j)
+        val neighbors = intArrayOf(0,0,0,0,0,0)
+        val n = this.numNeighbors(i, j, neighbors)
         val cell = board[i][j]
+
+        var max = 0
+        var max_index = 0
+        for(i in 0 until 6) {
+            if(neighbors[i] > max) {
+                max = neighbors[i]
+                max_index = i
+            } else if (neighbors[i] == max) {
+                max_index = 5
+            }
+        }
 
         if (cell > 0 && (n <= 1 || n >= 4)) {
             return 0
-        } else if (cell > 0 || (cell == 0 && n == 3)) {
+        } else if (cell > 0 && (n == 3 || n == 2)) {
+            return cell
+        } else if (cell == 0 && n == 3) {
             if(mode.compareTo("Singleplayer") == 0) {
                 return 1
             } else {
-                return 5
+                return max_index
             }
         }
         return 0
@@ -97,9 +111,8 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
         return board[x][y]
     }
 
-    private fun numNeighbors(x: Int, y: Int): Int {
+    private fun numNeighbors(x: Int, y: Int, neighbors: IntArray): Int {
         var n = 0
-
         /*
         0 0 0
         0 X 0
@@ -108,29 +121,53 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
 
         if(this.toroidalMode){
             //left
-            if (board[floorMod((x-1), sizeX)][y] > 0)
+            var cellVal = board[floorMod((x-1), sizeX)][y]
+            if (cellVal > 0) {
                 n++
+                neighbors[cellVal]++
+            }
             //right
-            if (board[floorMod((x+1), sizeX)][y] > 0)
+            cellVal = board[floorMod((x+1), sizeX)][y]
+            if (cellVal > 0) {
                 n++
+                neighbors[cellVal]++
+            }
             //up
-            if (board[x][floorMod((y-1), sizeY)] > 0)
+            cellVal = board[x][floorMod((y-1), sizeY)]
+            if (cellVal > 0) {
                 n++
+                neighbors[cellVal]++
+            }
             //down
-            if (board[x][floorMod((y+1), sizeY)] > 0)
+            cellVal = board[x][floorMod((y+1), sizeY)]
+            if (cellVal > 0) {
                 n++
+                neighbors[cellVal]++
+            }
             //up left
-            if (board[floorMod((x-1), sizeX)][floorMod((y-1), sizeY)] > 0)
+            cellVal = board[floorMod((x-1), sizeX)][floorMod((y-1), sizeY)]
+            if (cellVal > 0) {
                 n++
+                neighbors[cellVal]++
+            }
             //down left
-            if (board[floorMod((x-1), sizeX)][floorMod((y+1), sizeY)] > 0)
+            cellVal = board[floorMod((x-1), sizeX)][floorMod((y+1), sizeY)]
+            if (cellVal > 0) {
                 n++
+                neighbors[cellVal]++
+            }
             //up right
-            if (board[floorMod((x+1), sizeX)][floorMod((y-1), sizeY)] > 0)
+            cellVal = board[floorMod((x+1), sizeX)][floorMod((y-1), sizeY)]
+            if (cellVal > 0) {
                 n++
+                neighbors[cellVal]++
+            }
             //down right
-            if (board[floorMod((x+1), sizeX)][floorMod((y+1), sizeY)] > 0)
+            cellVal = board[floorMod((x+1), sizeX)][floorMod((y+1), sizeY)]
+            if (cellVal > 0) {
                 n++
+                neighbors[cellVal]++
+            }
         }else {
             val left = x == 0
             val right = x == sizeX - 1
@@ -138,26 +175,39 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
             val bottom = y == sizeY - 1
 
             if (!left) {
-                if (!top && board[x - 1][y - 1] > 0)
+                if (!top && board[x - 1][y - 1] > 0) {
                     n++
-                if (board[x - 1][y] > 0)
+                    neighbors[board[x - 1][y - 1]]++
+                }
+                if (board[x - 1][y] > 0) {
                     n++
-                if (!bottom && board[x - 1][y + 1] > 0)
+                    neighbors[board[x - 1][y]]++
+                }
+                if (!bottom && board[x - 1][y + 1] > 0) {
                     n++
+                    neighbors[board[x - 1][y + 1]]++
+                }
             }
-            if (!top && board[x][y - 1] > 0)
+            if (!top && board[x][y - 1] > 0) {
                 n++
-            if (!bottom && board[x][y + 1] > 0)
+                neighbors[board[x][y - 1]]++
+            }
+            if (!bottom && board[x][y + 1] > 0) {
                 n++
+                neighbors[board[x][y + 1]]++
+            }
             if (!right) {
                 if (!top && board[x + 1][y - 1] > 0) {
                     n++
+                    neighbors[board[x + 1][y - 1]]++
                 }
                 if (board[x + 1][y] > 0) {
                     n++
+                    neighbors[board[x + 1][y]]++
                 }
                 if (!bottom && board[x + 1][y + 1] > 0) {
                     n++
+                    neighbors[board[x + 1][y + 1]]++
                 }
             }
         }
@@ -170,15 +220,15 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
             for (j in -1 until this.sizeY) {
                 if (i == -1 || j == -1) {
                     if (i == -1 && j == -1) {
-                        print("+ ")
+                        print("  + ")
                     } else if (i == -1) {
-                        print("$j ")
+                        print("$j ".padStart(3))
                     } else if (j == -1) {
-                        print("$i ")
+                        print("$i".padStart(3))
                     }
                 } else {
                     val temp = this.board[i][j]
-                    print("$temp ")
+                    print("$temp".padStart(3))
                 }
             }
             println()
