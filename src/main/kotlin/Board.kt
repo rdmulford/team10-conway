@@ -8,6 +8,7 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
 
     private var board: Array<IntArray>
     private var toroidalMode = false
+    private var mode = "Singleplayer"
 
     init {
         board = Array(sizeX) { IntArray(sizeY) }
@@ -22,8 +23,9 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
         }
     }
 
-    constructor(sizeX: Int, sizeY: Int, toroidalMode: Boolean, initialState: Array<IntArray>) : this(sizeX, sizeY){
+    constructor(sizeX: Int, sizeY: Int, toroidalMode: Boolean, initialState: Array<IntArray>, mode: String) : this(sizeX, sizeY){
         this.toroidalMode = toroidalMode
+        this.mode = mode
 
         for (i in 0 until sizeX) {
             for (j in 0 until sizeY) {
@@ -63,10 +65,13 @@ class Board(private val sizeX: Int, private val sizeY: Int) : BoardInterface {
 
         if (cell > 0 && (n <= 1 || n >= 4)) {
             return 0
-        }else if (cell > 0 || (cell == 0 && n == 3)){
-            return cell
+        } else if (cell > 0 || (cell == 0 && n == 3)) {
+            if(mode.compareTo("Singleplayer") == 0) {
+                return 1
+            } else {
+                return 5
+            }
         }
-
         return 0
     }
 

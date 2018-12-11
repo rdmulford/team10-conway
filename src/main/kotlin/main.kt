@@ -7,6 +7,7 @@ fun main(args : Array<String>) {
     var inputString: String
     var board: BoardInterface?
     var multiplayer: Boolean
+    var mode = "Singplayer"
 
     //initializations
     multiplayer = false
@@ -19,8 +20,10 @@ fun main(args : Array<String>) {
         inputString = readLine()!!
         if (inputString.compareTo("singleplayer") == 0){
             multiplayer = false
+            mode = "Singleplayer"
         }else if (inputString.compareTo("multiplayer") == 0){
             multiplayer = true
+            mode = "Multiplayer"
         }
     }while((inputString.compareTo("singleplayer") != 0) and (inputString.compareTo("multiplayer") != 0))
 
@@ -38,7 +41,7 @@ fun main(args : Array<String>) {
 
         //load board
         if (inputString.compareTo("load") == 0) {
-            board = loadBoard()
+            board = loadBoard(mode)
         }
 
         //check for successful board creation
@@ -57,22 +60,22 @@ fun main(args : Array<String>) {
         print("How many turns: ")
         inputString = readLine()!!
         val turns = inputString.toInt()
-        board = generateMultiplayerBoard(players)
+        board = generateMultiplayerBoard(players, mode)
         playMultiplayer(board!!, players, turns)
     }
 }
 
-fun generateMultiplayerBoard(players: Int): BoardInterface? {
+fun generateMultiplayerBoard(players: Int, mode: String): BoardInterface? {
     val board :BoardInterface?
     if (players == 2) {
-        board = loadBoardFile("twoPlayer.brd")
+        board = loadBoardFile("twoPlayer.brd", mode)
     } else if (players == 3) {
-        board = loadBoardFile("threePlayer.brd")
+        board = loadBoardFile("threePlayer.brd", mode)
     } else if (players == 4) {
-        board = loadBoardFile("fourPlayer.brd")
+        board = loadBoardFile("fourPlayer.brd", mode)
     } else {
         // invalid player count, just assume two players and move on
-        board = loadBoardFile("twoPlayer.brd")
+        board = loadBoardFile("twoPlayer.brd", mode)
     }
     return board
 }
@@ -317,7 +320,7 @@ fun iterateBoard(board: BoardInterface?, n: Int) {
     }
 }
 
-fun loadBoardFile(filename: String): BoardInterface?{
+fun loadBoardFile(filename: String, mode: String): BoardInterface?{
     var inputString: String
     var file = File("boards/$filename")
 
@@ -371,12 +374,12 @@ fun loadBoardFile(filename: String): BoardInterface?{
         }
 
         //create board
-        return Board(width, height, toroidalMode, initialBoard)
+        return Board(width, height, toroidalMode, initialBoard, mode)
 
     }
 }
 
-fun loadBoard(): BoardInterface?{
+fun loadBoard(mode: String): BoardInterface?{
     var file: File
 
     var inputString: String
@@ -438,7 +441,7 @@ fun loadBoard(): BoardInterface?{
         }
 
         //create board
-        return Board(width, height, toroidalMode, initialBoard)
+        return Board(width, height, toroidalMode, initialBoard, mode)
 
     }
 }

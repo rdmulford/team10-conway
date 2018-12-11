@@ -96,7 +96,7 @@ internal class BoardTest {
         temp[3][3] = 1
         temp[3][2] = 1
         temp[2][1] = 1
-        val board = Board(15, 15, true, temp)
+        val board = Board(15, 15, true, temp, "Singleplayer")
         //original state of the board
         /* * * * * *
            * * * 1 *
