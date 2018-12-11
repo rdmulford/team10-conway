@@ -103,7 +103,6 @@ internal class BoardTest {
            * 1 * 1 *
            * * 1 1 *
            * * * * * */
-
         //after 60 iterations the glider should be reset
         for (i in 0 until 60) {
             board.nextGeneration()
